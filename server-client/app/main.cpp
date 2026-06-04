@@ -132,11 +132,11 @@ int main(int argc, char *argv[]) {
   // Create server or client based on mode
   FrmwrkBase *app = nullptr;
   if (is_server) {
-    app = new OpenServer(interface);
-    *debug_out << "Created OpenServer instance\n";
+    app = new Server(interface);
+    *debug_out << "Created Server instance\n";
   } else {
-    app = new OpenClient(interface);
-    *debug_out << "Created OpenClient instance\n";
+    app = new Client(interface);
+    *debug_out << "Created Client instance\n";
   }
 
   // Open the connection

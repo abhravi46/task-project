@@ -15,8 +15,8 @@ public:
   /**
    * @brief Constructor
    */
-  Interface(int port, const std::string& address)
-      : initialized_(false), fd_(-1), port_(port), address_(address) {}
+  Interface(int port, const std::string &address)
+      : initialized_(false), port_(port), address_(address) {}
 
   /**
    * @brief Destructor
@@ -31,32 +31,32 @@ public:
 
   /**
    * @brief Open a connection or resource
-   * @return true on success, false on failure
+   * @return File descriptor on success, -1 on failure
    */
-  virtual bool Open() = 0;
+  virtual int Open() = 0;
 
   /**
    * @brief Close the connection or resource
    */
-  virtual void Close() = 0;
+  virtual void Close(int fd_) = 0;
 
   /**
    * @brief Listen for incoming connections
    * @return true on success, false on failure
    */
-  virtual bool Listen() = 0;
+  virtual int Listen(int fd_) = 0;
 
   /**
    * @brief Connect to a remote endpoint
    * @return true on success, false on failure
    */
-  virtual bool Connect() = 0;
+  virtual bool Connect(int fd_) = 0;
 
   /**
    * @brief Disconnect from the remote endpoint
    * @return true on success, false on failure
    */
-  virtual bool Disconnect() = 0;
+  virtual bool Disconnect(int fd_) = 0;
 
   /**
    * @brief Write data to the connection
@@ -64,7 +64,7 @@ public:
    * @param size Number of bytes to write
    * @return Number of bytes written, or -1 on error
    */
-  virtual ssize_t Write(const void *buffer, size_t size) = 0;
+  virtual ssize_t Write(int fd_, const void *buffer, size_t size) = 0;
 
   /**
    * @brief Read data from the connection
@@ -72,12 +72,11 @@ public:
    * @param size Maximum number of bytes to read
    * @return Number of bytes read, or -1 on error
    */
-  virtual ssize_t Read(void *buffer, size_t size) = 0;
+  virtual ssize_t Read(int fd_, void *buffer, size_t size) = 0;
 
 protected:
   // Protected members for derived classes
   bool initialized_;
-  int fd_;
   int port_;
   std::string address_;
 
@@ -115,32 +114,32 @@ public:
 
   /**
    * @brief Open the loopback interface
-   * @return true on success, false on failure
+   * @return File descriptor on success, -1 on failure
    */
-  bool Open() override;
+  int Open() override;
 
   /**
    * @brief Close the loopback interface
    */
-  void Close() override;
+  void Close(int fd_) override;
 
   /**
    * @brief Listen is not applicable for loopback (returns false)
    * @return false always
    */
-  bool Listen() override;
+  int Listen(int fd_) override;
 
   /**
    * @brief Connect is not applicable for loopback (returns true if open)
    * @return true if interface is open, false otherwise
    */
-  bool Connect() override;
+  bool Connect(int fd_) override;
 
   /**
    * @brief Disconnect the loopback interface
    * @return true on success, false on failure
    */
-  bool Disconnect() override;
+  bool Disconnect(int fd_) override;
 
   /**
    * @brief Write data to the loopback buffer
@@ -148,7 +147,7 @@ public:
    * @param size Number of bytes to write
    * @return Number of bytes written, or -1 on error
    */
-  ssize_t Write(const void *buffer, size_t size) override;
+  ssize_t Write(int fd_, const void *buffer, size_t size) override;
 
   /**
    * @brief Read data from the loopback buffer
@@ -156,7 +155,7 @@ public:
    * @param size Maximum number of bytes to read
    * @return Number of bytes read, or -1 on error
    */
-  ssize_t Read(void *buffer, size_t size) override;
+  ssize_t Read(int fd_, void *buffer, size_t size) override;
 
 private:
   // Loopback-specific members
@@ -166,4 +165,5 @@ private:
   size_t read_pos_;
   size_t data_size_;
   bool is_open_;
+  bool is_connected_;
 };

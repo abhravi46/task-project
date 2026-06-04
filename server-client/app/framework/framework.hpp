@@ -10,7 +10,7 @@
  */
 class FrmwrkBase {
 public:
-  FrmwrkBase() = default;
+  FrmwrkBase() : handle_(-1) {}
   virtual ~FrmwrkBase() = default;
   virtual bool Open() = 0;
   virtual void Close() = 0;
@@ -20,7 +20,19 @@ public:
   virtual ssize_t Write(const void *buffer, size_t size) = 0;
   virtual ssize_t Read(void *buffer, size_t size) = 0;
 
+  /**
+   * @brief Get the socket handle (file descriptor)
+   * @return The socket file descriptor, or -1 if not set
+   */
+  int GetHandle() const { return handle_; }
+
 protected:
+  // Socket handle (file descriptor) that gets updated with the fd for the
+  // socket
+  int handle_;
+  int con_fd_;
+  bool opened = false;
+
 private:
   FrmwrkBase(const FrmwrkBase &) = delete;
   FrmwrkBase &operator=(const FrmwrkBase &) = delete;
@@ -32,22 +44,22 @@ private:
  * This class provides server-side functionality for accepting
  * incoming connections and handling client requests.
  */
-class OpenServer : public FrmwrkBase {
+class Server : public FrmwrkBase {
 public:
   /**
    * @brief Constructor
    * @param interface Pointer to the network interface implementation
    */
-  explicit OpenServer(Interface* interface);
+  explicit Server(Interface *interface);
 
   /**
    * @brief Destructor
    */
-  ~OpenServer() override;
+  ~Server() override;
 
   /**
    * @brief Open a server socket for listening
-   * @return true on success, false on failure
+   * @return File descriptor on success, -1 on failure
    */
   bool Open() override;
 
@@ -92,7 +104,7 @@ public:
 
 private:
   // Interface for network operations
-  Interface* interface_;
+  Interface *interface_;
 };
 
 /**
@@ -101,22 +113,22 @@ private:
  * This class provides client-side functionality for connecting
  * to a server and exchanging data.
  */
-class OpenClient : public FrmwrkBase {
+class Client : public FrmwrkBase {
 public:
   /**
    * @brief Constructor
    * @param interface Pointer to the network interface implementation
    */
-  explicit OpenClient(Interface* interface);
+  explicit Client(Interface *interface);
 
   /**
    * @brief Destructor
    */
-  ~OpenClient() override;
+  ~Client() override;
 
   /**
    * @brief Open a client socket
-   * @return true on success, false on failure
+   * @return File descriptor on success, -1 on failure
    */
   bool Open() override;
 
@@ -159,7 +171,7 @@ public:
    */
   ssize_t Read(void *buffer, size_t size) override;
 
-private:
+protected:
   // Interface for network operations
-  Interface* interface_;
+  Interface *interface_;
 };
