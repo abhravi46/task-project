@@ -1,0 +1,14 @@
+Starting server with loopback interface
+Port: 5003
+Interface created successfully
+Created Server instance
+Server opened successfully
+Server listening for connections...
+Server listening and client connected
+Output will be written to: /data/repos/task-project/server-client/tests/output/1024/server_received.txt
+Read 1024 bytes
+Wrote 1024 bytes to output file
+Reading input from: /data/repos/task-project/server-client/tests/1024/server.txt
+Wrote 1024 bytes from input file
+Server closed
+Application completed successfully

@@ -13,8 +13,9 @@ LocalLoopback::LocalLoopback(int port)
   std::memset(buffer_, 0, kBufferSize);
 }
 
-// The socket fd is owned by the caller (it is returned from Open()), so there is
-// nothing to release here; the owner is responsible for closing it via Close(fd).
+// The socket fd is owned by the caller (it is returned from Open()), so there
+// is nothing to release here; the owner is responsible for closing it via
+// Close(fd).
 LocalLoopback::~LocalLoopback() {}
 
 bool LocalLoopback::Init() {
@@ -94,6 +95,10 @@ int LocalLoopback::Listen(int fd_) {
     return -1;
   }
 
+  // The accepted connection is now established; mark the server connected so
+  // Write() can send data back (mirrors Connect() on the client side).
+  is_connected_ = true;
+
   // Return the client file descriptor for the accepted connection
   return client_fd;
 }
@@ -161,7 +166,7 @@ ssize_t LocalLoopback::Write(int fd_, const void *buffer, size_t size) {
 }
 
 ssize_t LocalLoopback::Read(int fd_, void *buffer, size_t size) {
-  if (!is_open_ || buffer == nullptr || size == 0) {
+  if (!is_open_ || !is_connected_ || buffer == nullptr || size == 0) {
     return 0;
   }
 

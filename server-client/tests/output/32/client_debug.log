@@ -1,0 +1,15 @@
+Starting client with loopback interface
+Port: 5000
+Interface created successfully
+Created Client instance
+Client opened successfully
+Client connecting to server...
+Client connected successfully
+Output will be written to: /data/repos/task-project/server-client/tests/output/32/client_received.txt
+Reading input from: /data/repos/task-project/server-client/tests/32/client.txt
+Wrote 32 bytes from input file
+Read 32 bytes
+Wrote 32 bytes to output file
+Client disconnected
+Client closed
+Application completed successfully
