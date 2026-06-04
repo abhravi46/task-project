@@ -128,7 +128,7 @@ bool LocalLoopback::Connect(int fd_) {
 
 bool LocalLoopback::Disconnect(int fd_) {
   // Disconnect the loopback interface
-  if (fd_ >= 0) {
+  if (is_connected_ && fd_ >= 0) {
     // Shutdown the socket connection
     shutdown(fd_, SHUT_RDWR);
   }
